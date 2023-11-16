@@ -5,6 +5,7 @@ export default function App() {
     <div>
       <h1>Hello world</h1>
       <h1>Salom Dunyo</h1>
+      <h3>bu mening birinchi react loyiham githubdagi</h3>
     </div>
   )
 }
