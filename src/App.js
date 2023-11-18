@@ -1,31 +1,44 @@
 import React, { useEffect, useState } from "react";
 
 export default function App() {
-  const [items, setItems] = useState([]);
+  const [result, setResult] = useState("");
 
-  useEffect(() => {
-    async function fetchItems() {
-      try {
-        const response = await fetch("./netlify/functions/getItems");
-        if (response.ok) {
-          const data = await response.json();
-          setItems(data);
-        } else {
-          console.error("faild to fetch items.");
-        }
-      } catch (error) {
-        console.error("Error:", error);
-      }
+  const processData = async () => {
+    const data = { number: 22 };
+    const response = await fetch("/.netlify/functions/data-processing", {
+      method: "POST",
+      body: JSON.stringify(data),
+    });
+    if (response.ok) {
+      const resultData = await response.json();
+      setResult(`Result: ${resultData.result}`);
+    } else {
+      setResult("Data processing failed");
     }
-    fetchItems();
-  }, []);
+  };
+
+  const authenticateUser = async () => {
+    const credentials = {username: "user", password: "password"}
+    const response = fetch("/.netlify/functions/authenticate", {
+      method: "POST",
+      body: JSON.stringify(credentials)
+    })
+
+    if (response.ok) {
+      const authResult = await response.json();
+      setResult(`Auth: ${authResult.message}`);
+    } else {
+      setResult("AuithenticateUser failed");
+    }
+  };
+
+  useEffect(() => {}, []);
 
   return (
     <div>
-      <h1>Items</h1>
-      <ul>
-        {items ? items.map((element, index) => <li>{element.name}</li>) : ""}
-      </ul>
+      <button onClick={processData}>Process Data</button>
+      <button onClick={authenticateUser}>AuithenticateUser</button>
+      <h3>{result}</h3>
     </div>
   );
 }
